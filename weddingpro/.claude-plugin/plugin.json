@@ -1,0 +1,6 @@
+{
+  "name": "weddingpro",
+  "description": "웨딩프로 조회 커넥터(MCP)와 업무 배경지식(용어·조회 워크플로우)을 묶은 플러그인. 설치하면 커넥터와 스킬이 함께 잡힌다.",
+  "version": "0.1.0",
+  "author": { "name": "HIT DX Solution", "email": "hitdxsolution@gmail.com" }
+}
