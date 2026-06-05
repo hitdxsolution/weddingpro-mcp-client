@@ -95,6 +95,31 @@ const LOGOUT_TOOL = {
   inputSchema: { type: "object", properties: {} },
 };
 
+// 제보(CS) → Discord webhook. 이 URL 은 public 배포물에 포함되므로 "그 채널에 쓰기"만 가능한 저위험 자원이다.
+// 악용(스팸) 시 Discord 에서 webhook 삭제/재발급으로 즉시 무효화한다(데이터 접근·삭제 불가).
+const REPORT_WEBHOOK_URL =
+  "https://discord.com/api/webhooks/1512418309130293390/AcaU24r0Az7sUFzOq0rnKGvJXPfE3_ZYNtl8hKa3IDMKuhyxXqgCSolTOmSACbb_d76b";
+const REPORT_TOOL = {
+  name: "wedding_pro_report",
+  description:
+    "웨딩프로 플러그인 사용 중 불편/버그/개선 요청을 운영팀에 제보한다. 사용자가 '제보', '불편해요', '버그 신고', '이거 안 돼요' 등을 말하면 이 도구를 호출한다. message 에 내용을 담아 호출하면 운영팀 채널로 전달된다(로그인 상태면 작성자도 함께 기록).",
+  inputSchema: {
+    type: "object",
+    properties: {
+      message: {
+        type: "string",
+        description: "제보 내용(불편한 점/버그/개선 요청). 필수.",
+      },
+      category: {
+        type: "string",
+        description:
+          "분류(선택): bug(버그) / improvement(개선) / question(문의) 등",
+      },
+    },
+    required: ["message"],
+  },
+};
+
 function send(obj) {
   process.stdout.write(`${JSON.stringify(obj)}\n`);
 }
@@ -243,6 +268,78 @@ async function handleLogin(id, args) {
   );
 }
 
+// accessToken(JWT) 에서 작성자 정보 추출. 비로그인/디코드 실패 시 기본값.
+function decodeReporter() {
+  if (!accessToken) return { email: "(비로그인)", pk: null, type: accountType };
+  try {
+    const p = JSON.parse(
+      Buffer.from(accessToken.split(".")[1], "base64url").toString("utf8"),
+    );
+    return {
+      email: p.email || "(unknown)",
+      pk: p.pk ?? null,
+      type: p.type || accountType,
+    };
+  } catch {
+    return { email: "(unknown)", pk: null, type: accountType };
+  }
+}
+
+// 제보를 Discord webhook 으로 전송 (embed 포맷)
+async function handleReport(id, args) {
+  const message =
+    args && typeof args.message === "string" ? args.message.trim() : "";
+  if (!message) {
+    toolResult(id, "제보 내용을 message 인자에 담아 알려주세요.", true);
+    return;
+  }
+  const category =
+    args && typeof args.category === "string" && args.category
+      ? args.category
+      : "미지정";
+  const who = decodeReporter();
+  const payload = {
+    username: "WeddingPro 제보",
+    embeds: [
+      {
+        title: "웨딩프로 플러그인 제보",
+        description: message.slice(0, 3800),
+        color: 0xe67e22,
+        fields: [
+          {
+            name: "작성자",
+            value: `${who.email}${who.pk != null ? ` (pk:${who.pk})` : ""}`,
+            inline: true,
+          },
+          { name: "계정유형", value: String(who.type), inline: true },
+          { name: "분류", value: category, inline: true },
+          { name: "서버", value: origin, inline: false },
+        ],
+        timestamp: new Date().toISOString(),
+        footer: { text: "weddingpro-mcp-client" },
+      },
+    ],
+  };
+  try {
+    const res = await fetch(REPORT_WEBHOOK_URL, {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+    if (res.ok || res.status === 204) {
+      toolResult(id, "제보가 운영팀에 전달되었습니다. 감사합니다!");
+    } else {
+      toolResult(id, `제보 전송 실패 (HTTP ${res.status})`, true);
+    }
+  } catch (err) {
+    toolResult(
+      id,
+      `제보 전송 실패: ${err instanceof Error ? err.message : String(err)}`,
+      true,
+    );
+  }
+}
+
 async function handle(message) {
   const method = message.method;
 
@@ -260,7 +357,7 @@ async function handle(message) {
       resp && resp.result && Array.isArray(resp.result.tools)
         ? resp.result.tools
         : [];
-    tools.push(LOGIN_TOOL, LOGOUT_TOOL);
+    tools.push(LOGIN_TOOL, LOGOUT_TOOL, REPORT_TOOL);
     const result = resp && resp.result ? { ...resp.result, tools } : { tools };
     send({ jsonrpc: "2.0", id: message.id, result });
     return;
@@ -277,6 +374,13 @@ async function handle(message) {
       refreshToken = null;
       clearTokensFile();
       toolResult(message.id, "로그아웃 되었습니다");
+      return;
+    }
+    if (name === "wedding_pro_report") {
+      await handleReport(
+        message.id,
+        message.params && message.params.arguments,
+      );
       return;
     }
     const resp = await relay(message);
