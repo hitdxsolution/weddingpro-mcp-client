@@ -9,8 +9,29 @@
 
 ## 요구사항
 
-- **Node.js 18 이상.** 커넥터는 동봉 브리지를 Node 로 실행하므로 사용하는 PC에 Node.js 18+ 가 설치돼 있어야 합니다. 없으면 커넥터가 연결되지 않습니다(설치: https://nodejs.org 의 LTS).
+- **Node.js 18 이상.** 커넥터는 동봉 브리지를 Node 로 실행하므로 사용하는 PC에 Node.js 18+ 가 있어야 합니다. 없으면 커넥터가 연결되지 않습니다.
 - 웨딩프로 계정(이메일/비밀번호). 설치만으로는 데이터에 접근하지 않으며, 대화에서 로그인해야 조회가 됩니다.
+
+### Node.js 설치
+
+이미 설치돼 있는지 확인: 터미널에서 `node --version` → `v18` 이상이면 OK.
+
+**Windows**
+```powershell
+winget install OpenJS.NodeJS.LTS
+```
+또는 https://nodejs.org 에서 **LTS** `.msi` 설치(설치 중 "Add to PATH" 유지).
+
+**macOS**
+- https://nodejs.org 에서 **LTS** `.pkg` 설치, 또는 Homebrew: `brew install node`
+
+### ★ 설치 후 재시작 (필수)
+
+Node 를 새로 설치하면 **이미 켜져 있던 Claude 는 새 PATH 를 모릅니다.** 반드시 재시작하세요.
+- **Claude Desktop**: 완전 종료 후 재실행 — Windows 는 트레이 아이콘 우클릭 → 종료, macOS 는 `Cmd+Q`(창만 닫으면 안 됨).
+- **Claude Code/터미널**: 터미널 창을 닫고 새로 엽니다.
+
+재시작 후 커넥터를 껐다 다시 연결하면 됩니다. 막히면 동봉 `weddingpro-setup` 스킬이 단계별로 안내합니다.
 
 ## 설치 (Claude Code)
 
