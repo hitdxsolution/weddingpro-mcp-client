@@ -7,31 +7,15 @@
 | `weddingpro` | 직원 | `./weddingpro` |
 | `weddingpro-vendor` | 거래처(vendor) | `./weddingpro-vendor` |
 
-## 설치 (Claude Code)
+## 설치
 
-```bash
-# 1) 이 마켓플레이스 등록
-/plugin marketplace add hitdxsolution/weddingpro-mcp-client
-
-# 2) 플러그인 설치 (직원용 또는 거래처용)
-/plugin install weddingpro@weddingpro-mcp-client
-/plugin install weddingpro-vendor@weddingpro-mcp-client
-```
+Claude 데스크탑/웹의 **설정 → 플러그인(마켓플레이스)** 에서 `hitdxsolution/weddingpro-mcp-client` 마켓플레이스를 추가한 뒤, 직원은 `weddingpro`, 거래처는 `weddingpro-vendor` 플러그인을 설치하세요.
 
 설치 후 커넥터 사용 승인 → 대화에서 로그인하면 조회 도구가 동작합니다. PC에 **Node.js 18+ 가 필요**합니다 — 없거나 모르겠으면 아래 [요구사항](#요구사항)을 먼저 확인하세요. 연결이 안 되거나 도구가 안 보이면 동봉된 `weddingpro-setup` 스킬이 OS별 Node 설치·재연결을 안내합니다.
 
 ### 플러그인 업데이트
 
-새 버전이 나와도 **업데이트 버튼이 비활성화되거나, 재설치해도 구버전이 깔리는 알려진 문제**가 있습니다(Claude가 마켓플레이스를 처음 받은 시점의 스냅샷을 재사용하기 때문 — Claude 자체 버그로 보고되어 있음).
-
-**Claude Code (터미널)** — 아래 두 줄이면 됩니다:
-
-```bash
-/plugin marketplace update weddingpro-mcp-client
-/plugin update weddingpro@weddingpro-mcp-client
-```
-
-**Claude Desktop / claude.ai** — 플러그인만 지웠다 다시 설치하면 구버전이 다시 깔립니다. 순서대로:
+새 버전이 나와도 **업데이트 버튼이 비활성화되거나, 재설치해도 구버전이 깔리는 알려진 문제**가 있습니다(Claude가 마켓플레이스를 처음 받은 시점의 스냅샷을 재사용하기 때문 — Claude 자체 버그로 보고되어 있음). 플러그인만 지웠다 다시 설치하면 구버전이 다시 깔립니다. 순서대로:
 
 1. **플러그인 제거** 후, **마켓플레이스(weddingpro-mcp-client) 자체도 제거**
 2. Claude Desktop **완전 종료 후 재실행** (macOS `Cmd+Q`, Windows 트레이 우클릭 → 종료)
