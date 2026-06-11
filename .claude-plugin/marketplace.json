@@ -6,14 +6,14 @@
   },
   "metadata": {
     "description": "웨딩프로 조회 커넥터(MCP) 플러그인 마켓플레이스 — 직원용/거래처용",
-    "version": "0.2.1"
+    "version": "0.2.2"
   },
   "plugins": [
     {
       "name": "weddingpro",
       "source": "./weddingpro",
       "description": "웨딩프로(직원) 조회 커넥터(MCP) + 업무 배경지식 스킬. 설치 후 대화에서 로그인하면 동작. Node.js 18+ 필요.",
-      "version": "0.2.1",
+      "version": "0.2.2",
       "author": {
         "name": "HIT DX Solution",
         "email": "hitdxsolution@gmail.com"
@@ -23,7 +23,7 @@
       "name": "weddingpro-vendor",
       "source": "./weddingpro-vendor",
       "description": "웨딩프로(거래처/vendor) 조회 커넥터(MCP) + 업무 배경지식 스킬. 설치 후 대화에서 로그인하면 동작. Node.js 18+ 필요.",
-      "version": "0.2.1",
+      "version": "0.2.2",
       "author": {
         "name": "HIT DX Solution",
         "email": "hitdxsolution@gmail.com"
