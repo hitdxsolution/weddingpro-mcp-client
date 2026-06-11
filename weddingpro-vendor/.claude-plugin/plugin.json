@@ -1,7 +1,7 @@
 {
   "name": "weddingpro-vendor",
   "description": "웨딩프로 거래처(vendor)용 조회 커넥터(MCP)와 조회 워크플로우 배경지식을 묶은 플러그인. 설치하면 커넥터와 스킬이 함께 잡힌다.",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "author": {
     "name": "HIT DX Solution",
     "email": "hitdxsolution@gmail.com"
