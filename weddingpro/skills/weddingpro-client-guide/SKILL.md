@@ -25,11 +25,11 @@ description: 웨딩프로 기능 사용법 안내. 사용자가 "X 어떻게 해
 
 ## 공개 노션 사이트(notion.site)에서 자료 가져오는 방법
 
-노션 공개 페이지는 JavaScript 렌더링이라 일반 fetch(WebFetch)로는 본문이 비어 보인다. **노션 내부 API를 직접 호출**해야 한다. 인증은 필요 없다(공개 사이트 한정).
+노션 공개 페이지는 JavaScript 렌더링이라 일반 fetch(WebFetch)로는 본문이 비어 보인다. **노션 내부 API를 직접 호출**해야 한다. 인증은 필요 없다(공개 사이트 한정). JS 실행도 필요 없다 — 아래 전 과정이 일반 HTTP 호출(curl)만으로 동작함을 실제 검증했다(목록 조회 → 문서 본문 → 영상 링크까지).
 
 ### 1단계: 루트 페이지 ID 추출
 
-URL 끝에 32자리 hex가 붙어 있으면 그것이 페이지 ID다(8-4-4-4-12 dash 형식으로 변환해 사용). 없으면 HTML에서 추출한다:
+URL 끝에 32자리 hex가 붙어 있으면 그것이 페이지 ID다(8-4-4-4-12 dash 형식으로 변환해 사용). iframe 임베드 주소(`https://<사이트 호스트>/ebd/<32자리>`)를 공유받았다면 `/ebd/` 뒤 32자리가 그대로 루트 페이지 ID다. 둘 다 없으면 HTML에서 추출한다:
 
 ```bash
 curl -sL '<사이트 URL>' | grep -oE '[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}' | sort -u
@@ -60,8 +60,9 @@ curl -s 'https://<사이트 호스트>/api/v3/queryCollection' \
 
 - 행 ID 목록: `result.reducerResults.collection_group_results.blockIds`
 - 각 행은 `recordMap.block.<행ID>`의 page 블록. `properties`에 제목(`title`)과 그 외 속성(기능 분류, 동영상 URL 등)이 있다.
-- 속성 키 ↔ 이름 매핑: `recordMap.collection.<collection_id>.value.schema`
-- YouTube 등 영상 링크는 보통 행 속성의 세그먼트 안 `["a", URL]` 또는 텍스트 자체로 들어 있다.
+- 속성 키 ↔ 이름 매핑: `recordMap.collection.<collection_id>.value.schema` (블록과 마찬가지로 `value.value.schema`로 한 겹 더 감싸져 올 수 있으니 둘 다 처리). 실측 예: 속성 이름이 `이름`(title)·`기능`·`동영상 자료`였다 — 단, 속성명도 바뀔 수 있으니 schema에서 매번 확인할 것.
+- YouTube 등 영상 링크는 보통 행 속성의 세그먼트 안 `["a", URL]` 또는 텍스트 자체로 들어 있다(둘 다 같은 URL인 경우가 많음).
+- 루트 페이지에 데이터베이스가 여러 개(직원용/거래처용/배포 전 등) 있을 수 있다 — 질문 대상에 맞는 collection을 골라 조회한다.
 
 ### 4단계: 하위 문서 페이지 링크 / 본문
 
@@ -87,4 +88,5 @@ for bid, b in blocks.items():
 
 - 같은 대화 안에서는 목록 조회 결과를 재사용하고, 같은 API를 불필요하게 반복 호출하지 않는다.
 - "별도 공개 예정" 등으로 표시된 문서는 아직 내용이 없을 수 있다 — 그대로 안내한다.
-- 이 방법은 **공개(public) 노션 사이트 전용**이다. 비공개 페이지는 가져올 수 없다.
+- 본문의 스크린샷(image 블록)은 파일 URL이 서명(signed) URL이라 직접 첨부·재사용이 어렵다. 이미지 자체를 옮기려 하지 말고 **단계별 텍스트 설명 + 노션 문서 링크 + 영상 링크**로 안내한다.
+- 이 방법은 **공개(public) 노션 사이트 전용**이다. 비공개 페이지는 가져올 수 없다. authenticate/OAuth 같은 인증 절차는 시도하지 않는다(불필요).
