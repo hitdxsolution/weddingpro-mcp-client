@@ -12,7 +12,7 @@
     {
       "name": "weddingpro",
       "source": "./weddingpro",
-      "description": "웨딩프로(직원) 조회 커넥터(MCP) + 업무 배경지식 스킬. 설치 후 대화에서 로그인하면 동작. Node.js 18+ 필요.",
+      "description": "웨딩프로(직원) 조회 커넥터(MCP) + 업무 배경지식 스킬. 설치 후 브라우저에서 WeddingPro 계정으로 로그인하면 동작.",
       "version": "0.2.2",
       "author": {
         "name": "HIT DX Solution",
@@ -22,7 +22,7 @@
     {
       "name": "weddingpro-vendor",
       "source": "./weddingpro-vendor",
-      "description": "웨딩프로(거래처/vendor) 조회 커넥터(MCP) + 업무 배경지식 스킬. 설치 후 대화에서 로그인하면 동작. Node.js 18+ 필요.",
+      "description": "웨딩프로(거래처/vendor) 조회 커넥터(MCP) + 업무 배경지식 스킬. 설치 후 브라우저에서 WeddingPro 계정으로 로그인하면 동작.",
       "version": "0.2.2",
       "author": {
         "name": "HIT DX Solution",
