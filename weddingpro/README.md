@@ -1,24 +1,12 @@
-# weddingpro 플러그인
+# WeddingPro 직원 커넥터
 
-웨딩프로 조회 커넥터(MCP) + 업무 배경지식(스킬)을 한 꾸러미로 담은 Claude 플러그인. 운영(prod) 서버 고정.
+Claude에서 커넥터를 연결하면 브라우저에 WeddingPro 로그인 화면이 열립니다. **직원 계정**으로 로그인하고 Claude로 돌아오면 조회 도구를 사용할 수 있습니다.
 
-## 구성
+비밀번호는 WeddingPro 로그인 화면에 입력합니다. Claude가 토큰 저장과 갱신을 처리합니다.
 
-```
-weddingpro/
-├── .claude-plugin/plugin.json  # 매니페스트
-├── .mcp.json                   # 커넥터 'weddingpro' → server/index.js (mcp/employee, prod 고정)
-├── server/index.js             # 브리지: 대화 내 로그인 + 토큰 자동갱신
-└── skills/                                  # 폴더명 전부 weddingpro- prefix 통일
-    ├── weddingpro-terms/                     # 업무 용어(일정 ≠ 홀일정) ↔ 도구 매핑
-    ├── weddingpro-login/                     # 로그인을 선택형 질문(AskUserQuestion)으로 안내
-    └── weddingpro-browser-rule/              # 브라우저 접근 시 조회 전용·변경 금지·반복 패턴화 규칙
-```
+| 환경 | 직접 연결 주소 |
+| --- | --- |
+| 운영 | `https://pro.villadegd-server.click/mcp/employee` |
+| 개발 | `https://dev.villadegd-server.click/mcp/employee` |
 
-## 로그인
-
-대화에서 "로그인해줘" → `wedding_pro_login`. 입력창(elicitation)을 지원하는 클라이언트면 폼으로, 아니면 이메일/비밀번호를 물어보니 입력하면 된다. 토큰은 메모리 보관·자동 갱신.
-
-## 빌드
-
-상위 `mcp-extensions/build.sh` 로 빌드한다. 서버 주소는 운영(prod) 고정 — 다른 서버가 필요하면 `.mcp.json` 의 `MCP_URL` 을 직접 바꾼다.
+로그인 화면이 열리지 않거나 조회 도구가 표시되지 않으면 연결 주소와 클라이언트의 원격 HTTP MCP·OAuth 지원 여부를 확인하세요. 연결이 만료됐거나 계정을 바꾸려면 Claude 커넥터 설정에서 기존 연결을 해제하고 다시 연결하세요.
